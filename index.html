@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Haunted Frequency Garden</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/addons/p5.sound.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #777;
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
+            user-select: none;
+            cursor: default;
+        }
+
+        .title {
+            position: fixed;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            color: #444;
+            z-index: 1001;
+            transition: opacity 0.5s;
+        }
+
+        #ui-panel {
+            position: fixed;
+            top: 40px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 12px;
+            border: 1px solid #222;
+            border-radius: 1px;
+            transition: opacity 0.5s;
+            z-index: 1000;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        #ui-panel.hidden, .title.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        button {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            color: #666;
+            padding: 8px 12px;
+            margin: 4px 0;
+            cursor: pointer;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            width: 140px;
+            text-transform: lowercase;
+        }
+
+        button:hover { 
+            background: #1a1a1a; 
+            color: #888;
+        }
+        
+        button:disabled { 
+            opacity: 0.3; 
+            cursor: not-allowed; 
+        }
+
+        .status-group {
+            margin-top: 8px;
+            font-size: 9px;
+            color: #444;
+            line-height: 1.2;
+        }
+
+        #instructions {
+            margin-top: 8px;
+            font-size: 9px;
+            color: #333;
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">the haunted frequency garden</div>
+    
+    <div id="ui-panel">
+        <button id="initBtn">initialize audio</button>
+        <button id="playBtn" disabled>enter garden</button>
+        
+        <div class="status-group">
+            <div>status: <span id="statusText">waiting</span></div>
+            <div>audio: <span id="audioState">not loaded</span></div>
+            <div>depth: <span id="depthText">0m</span></div>
+        </div>
+        
+        <div class="status-group">
+            <div>bass: <span id="bassLevel">0</span></div>
+            <div>mid: <span id="midLevel">0</span></div>
+            <div>treble: <span id="trebleLevel">0</span></div>
+        </div>
+        
+        <div id="instructions">
+            space: play/pause<br>
+            mouse: show interface<br>
+            <br>
+            bass → smoke/fog<br>
+            mid → solid masses<br>
+            treble → morphing lines
+        </div>
+    </div>
+
+    <script src="sketch.js"></script>
+    <script>
+        let uiTimeout;
+        const uiPanel = document.getElementById('ui-panel');
+        const title = document.querySelector('.title');
+        
+        function resetUITimeout() {
+            clearTimeout(uiTimeout);
+            uiPanel.classList.remove('hidden');
+            title.classList.remove('hidden');
+            uiTimeout = setTimeout(() => {
+                uiPanel.classList.add('hidden');
+                title.classList.add('hidden');
+            }, 5000);
+        }
+
+        document.addEventListener('mousemove', resetUITimeout);
+
+        document.getElementById('initBtn').addEventListener('click', () => {
+            if (typeof initializeAudio === 'function') initializeAudio();
+        });
+
+        document.getElementById('playBtn').addEventListener('click', () => {
+            if (typeof togglePlay === 'function') togglePlay();
+        });
+
+        resetUITimeout();
+    </script>
+</body>
+</html>
